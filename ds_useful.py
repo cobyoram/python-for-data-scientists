@@ -7,9 +7,21 @@ import math
 # ----- FUNCTION FOR DISTRIBUTIONS ---------------|
 def auto_subplots(df, **kwargs):
     '''
-    kwargs
-    df
+    This function creates a series of sublots to display the distribution for all continuous variables in a DataFrame
+    It operates like a FacetGrid, but it's a little more customized.
 
+    The dimensions of the subplot (no_subplots X no_subplots) are calculated automatically by how many continuous variables are found.
+    You can use a number of kwargs to customize the output of the function. Those include:
+    kwargs:
+        limitx  -   Limits the number of subplots along the x-axis, and calculates the no_subplots on y axis from given limit
+        kind    -   Allows you to specify which type of distribution grid you'd like to use. Values include
+            -   'hist': creates a matplotlib.pyplot histogram
+            -   'boxplot': creates a seaborn boxplot
+                -   'whis': adjust the boxplot whisker bounds
+            -   'swarm': create a one-dimensional seaborn swarmplot
+
+    Enjoy!
+    
     '''
     EACH_SIZE = 3
     WSPACE = .3
