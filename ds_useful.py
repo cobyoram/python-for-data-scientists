@@ -15,13 +15,13 @@ def auto_subplots(df, **kwargs):
     kwargs:
         limitx  -   Limits the number of subplots along the x-axis, and calculates the no_subplots on y axis from given limit
         kind    -   Allows you to specify which type of distribution grid you'd like to use. Values include
-            -   'hist': creates a matplotlib.pyplot histogram
-            -   'boxplot': creates a seaborn boxplot
-                -   'whis': adjust the boxplot whisker bounds
-            -   'swarm': create a one-dimensional seaborn swarmplot
+            -   hist: creates a matplotlib.pyplot histogram
+            -   boxplot: creates a seaborn boxplot
+                -   whis: adjust the boxplot whisker bounds
+            -   swarm: create a one-dimensional seaborn swarmplot
 
     Enjoy!
-    
+
     '''
     EACH_SIZE = 3
     WSPACE = .3
