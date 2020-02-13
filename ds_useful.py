@@ -20,7 +20,7 @@ def auto_subplots(df, **kwargs):
                 -   whis: adjust the boxplot whisker bounds
             -   swarm: create a one-dimensional seaborn swarmplot
 
-    Enjoy!
+    Returns None
 
     '''
     EACH_SIZE = 3
@@ -72,14 +72,34 @@ def auto_subplots(df, **kwargs):
 # ------- END OF DISTRIBUTION SELF_MADE FUNCS ----------------------|
 
 # ----- FUNCTION FOR GENERAL MISSING VALUES ---------------|
-def missingness_summary(df, print_log, sort):
+def missingness_summary(df, **kwargs):
+    '''
+    This function creates a series representing what percentage of data is null for each column of a dataframe
+
+    You can use a number of kwargs to customize the function. Those include:
+    kwargs:
+        print_log   -   [True, False]: If true, will print the output before returning the Series (default False)
+        sort        -   ['asc', 'desc']: Allows you to sort the data by ascending or descending (default 'desc')
+    
+    Returns Series with index = column names and value = percentage of nulls in column
+
+    '''
     s = df.isna().sum()*100/len(df)
+
+    sort = 'desc'
+    if kwargs.get('sort'):
+        sort = kwargs.get('sort')
     if sort == 'asc':
         s.sort_values(ascending=True, inplace=True)
     elif sort == 'desc':
         s.sort_values(ascending=False, inplace=True)
+
+    print_log = False
+    if kwargs.get('print_log'):
+        print_log = kwargs.get('print_log')
     if print_log == True:
         print(s)
+
     return s
 # ------- END OF MISSING SELF_MADE FUNCS ----------------------|
 
@@ -96,15 +116,33 @@ def get_outliers(s, threshold):
     min_val, max_val = get_minmax_with_threshold(s, threshold)
     return s.loc[(s > max_val) | (s < min_val)]
 
-def outliers_summary(df, threshold, print_log, sort):    
+def outliers_summary(df, threshold, **kwargs):  
+    '''
+    This function creates a series representing what percentage of data are outliers for each column of a dataframe
+
+    You can use a number of kwargs to customize the function. Those include:
+    kwargs:
+        print_log   -   [True, False]: If true, will print the output before returning the Series (default False)
+        sort        -   ['asc', 'desc']: Allows you to sort the data by ascending or descending (default 'desc')
+    
+    Returns Series with index = column names and value = percentage of outliers in column
+
+    '''
     s = pd.Series([get_outliers(df[col], threshold).count() *100 / len(df[col])
                    for col in df.select_dtypes(include='number').columns],
                  index=df.select_dtypes(include='number').columns)
     
+    sort = 'desc'
+    if kwargs.get('sort'):
+        sort = kwargs.get('sort')
     if sort == 'asc':
         s.sort_values(ascending=True, inplace=True)
     elif sort == 'desc':
         s.sort_values(ascending=False, inplace=True)
+
+    print_log = False
+    if kwargs.get('print_log'):
+        print_log = kwargs.get('print_log')
     if print_log == True:
         print(s)
         
