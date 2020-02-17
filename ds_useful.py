@@ -238,9 +238,44 @@ def plot_confusion_matrix(cm,
     plt.show()
 # ------- END OF MODEL ANALYSIS SELF_MADE FUNCS ----------------------|
 
+def repeats_summary(df, sort='desc', print_log=False, value_agg='none', value=0):
+    repeats_percents = []
+    print_value = []
+    for col in df.columns:
+        if value_agg == 'none':
+            value = value
+            print_value = []
+        elif value_agg == 'mode':
+            value = df[col].mode().iloc[0]
+        elif value_agg == 'mean':
+            value = df[col].mean().iloc[0]
+        elif value_agg == 'median':
+            value = df[col].median().iloc[0]
+        elif value_agg == 'max':
+            value = df[col].max().iloc[0]
+        elif value_agg == 'min':
+            value = df[col].min().iloc[0]
+        else: raise ValueError('Wrong entry for \'value_agg\'. Will accept \'mode\', \'mean\', \'median\', \'max\', \'min\'')
 
+        repeats_percents.append(len(df.loc[df[col] == value])*100/len(df))
+        print_value.append(value)
 
+    S = pd.Series(repeats_percents, index=df.columns)
+    if sort == 'desc':
+        S = S.sort_values(ascending=False)
+    elif sort == 'asc':
+        S = S.sort_values(ascending=True)
+    else: raise ValueError('Wrong entry for \'sort\'. Will accept \'asc\' or \'desc\'')
 
+    if print_log:
+        print(f'Repeated values: {print_value}\n{S}')
+
+    return S
+
+def drop_null_rows(df):
+    for col in df.columns:
+        df.drop(df.loc[df[col].isnull()].index, axis=0, inplace=True)
+    return df
 
 
 
