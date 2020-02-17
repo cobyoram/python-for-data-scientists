@@ -277,7 +277,37 @@ def drop_null_rows(df):
         df.drop(df.loc[df[col].isnull()].index, axis=0, inplace=True)
     return df
 
+def similar_variables(df, target, similarity_threshold=.9, print_log=False):
+    corr = df.corr()
 
+    feature_corr = corr.drop('saleprice', axis=1).drop('saleprice', axis=0)
+    target_corr = corr.loc['saleprice']
+
+    similar_pairs = []
+    for col in feature_corr.columns:
+        for index in feature_corr.index:
+            if np.abs(feature_corr.loc[index, col]) > similarity_threshold and index != col and [col, index] not in similar_pairs:
+                similar_pairs.append([index, col])
+
+    # Then we'll find the variable in each similar pair that is less correlated (which we'll drop later)
+    drop_variables = []
+    corr_to_target = []
+
+    for pair in similar_pairs:
+        print(target_corr[pair[0]], target_corr[pair[1]])
+        if target_corr[pair[0]] < target_corr[pair[1]]:
+            drop_variables.append(pair[0])
+            corr_to_target.append(target_corr[pair[0]])
+        else:
+            drop_variables.append(pair[1])
+            corr_to_target.append(target_corr[pair[0]])
+
+    S = pd.Series(corr_to_target, index=drop_variables)
+    
+    if print_log:
+        print(S)
+    
+    return S
 
 
 # def auto_subplots(df, **kwargs):
