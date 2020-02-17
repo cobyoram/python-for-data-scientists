@@ -277,6 +277,20 @@ def drop_null_rows(df):
         df.drop(df.loc[df[col].isnull()].index, axis=0, inplace=True)
     return df
 
+def remove_correlated_features(dataset, target, threshold):
+    col_corr = set()
+    corr_matrix = dataset.drop(target, axis=1).corr()
+    for i in range(len(corr_matrix.columns)):
+        for j in range(i):
+            if (corr_matrix.iloc[i, j] >= threshold) and (corr_matrix.columns[j] not in col_corr):
+                colname = corr_matrix.columns[i]
+                col_corr.add(colname)
+                if colname in dataset.columns:
+                    print(f'Deleted {colname} from dataset.')
+                    del dataset[colname]
+    return dataset
+
+# Function is outdated
 def similar_variables(df, target, similarity_threshold=.9, print_log=False):
     corr = df.corr()
 
@@ -307,7 +321,6 @@ def similar_variables(df, target, similarity_threshold=.9, print_log=False):
         print(S)
     
     return S
-
 
 # def auto_subplots(df, **kwargs):
 #     '''
