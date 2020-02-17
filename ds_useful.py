@@ -294,7 +294,6 @@ def similar_variables(df, target, similarity_threshold=.9, print_log=False):
     corr_to_target = []
 
     for pair in similar_pairs:
-        print(target_corr[pair[0]], target_corr[pair[1]])
         if target_corr[pair[0]] < target_corr[pair[1]]:
             drop_variables.append(pair[0])
             corr_to_target.append(target_corr[pair[0]])
