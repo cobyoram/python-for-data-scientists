@@ -161,7 +161,7 @@ def drop_outliers(df, threshold):
     drop_inds = set()
     for col in outliers_summary(df, threshold).index:
         outliers = get_outliers(df[col], threshold).index
-        drop_inds = set(list(drop_inds) + list(outliers.index))
+        drop_inds = set(list(drop_inds) + list(outliers))
     df.drop(index=drop_inds, inplace=True)
     return df
 # ------- END OF OUTLIER SELF_MADE FUNCS ----------------------|
@@ -294,7 +294,7 @@ def remove_correlated_features(dataset, target, threshold):
                 colname = corr_matrix.columns[i]
                 col_corr.add(colname)
                 if colname in dataset.columns:
-                    print(f'Deleted {colname} from dataset.')
+                    # print(f'Deleted {colname} from dataset.')
                     del dataset[colname]
     return dataset
 
