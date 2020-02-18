@@ -105,19 +105,23 @@ def missingness_summary(df, **kwargs):
 # ------- END OF MISSING SELF_MADE FUNCS ----------------------|
 
 # ----- FUNCTIONS FOR GENERAL OUTLIER HANDLING --------------|
-def get_minmax_with_threshold(s, threshold):
-    q75, q25 = np.percentile(s, [75,25])
-    iqr = q75 - q25
-    min_val = q25 - (iqr*threshold)
-    max_val = q75 + (iqr*threshold)
+def get_minmax_with_threshold(s, threshold, range_type='iqr'):
+    if range_type == 'iqr':
+        q75, q25 = np.percentile(s, [75,25])
+        ranged = q75 - q25
+    elif range_type == 'std':
+        ranged = S.std()
+
+    min_val = q25 - (ranged*threshold)
+    max_val = q75 + (ranged*threshold)
     
     return min_val, max_val
     
-def get_outliers(s, threshold):
-    min_val, max_val = get_minmax_with_threshold(s, threshold)
+def get_outliers(s, threshold, range_type='iqr'):
+    min_val, max_val = get_minmax_with_threshold(s, threshold, range_type=range_type)
     return s.loc[(s > max_val) | (s < min_val)]
 
-def outliers_summary(df, threshold, **kwargs):  
+def outliers_summary(df, threshold, range_type='iqr', **kwargs):  
     '''
     This function creates a series representing what percentage of data are outliers for each column of a dataframe
 
@@ -129,7 +133,7 @@ def outliers_summary(df, threshold, **kwargs):
     Returns Series with index = column names and value = percentage of outliers in column
 
     '''
-    s = pd.Series([get_outliers(df[col], threshold).count() *100 / len(df[col])
+    s = pd.Series([get_outliers(df[col], threshold, range_type=range_type).count() *100 / len(df[col])
                    for col in df.select_dtypes(include='number').columns],
                  index=df.select_dtypes(include='number').columns)
     
@@ -149,18 +153,18 @@ def outliers_summary(df, threshold, **kwargs):
         
     return s
 
-def get_percentiles(df, column_name, threshold):
-    min_val, max_val = get_minmax_with_threshold(df[column_name], threshold)
+def get_percentiles(df, column_name, threshold, ranage_type='iqr'):
+    min_val, max_val = get_minmax_with_threshold(df[column_name], threshold, range_type=range_type)
     
     max_percentile = df.loc[df[column_name] >= max_val, column_name].count() / len(df[column_name])
     min_percentile = df.loc[df[column_name] <= min_val, column_name].count() / len(df[column_name])
     
     return min_percentile, max_percentile
 
-def drop_outliers(df, threshold):
+def drop_outliers(df, threshold, range_type='iqr'):
     drop_inds = set()
-    for col in outliers_summary(df, threshold).index:
-        outliers = get_outliers(df[col], threshold).index
+    for col in outliers_summary(df, threshold, range_type=range_type).index:
+        outliers = get_outliers(df[col], threshold, range_type=range_type).index
         drop_inds = set(list(drop_inds) + list(outliers))
     df.drop(index=drop_inds, inplace=True)
     return df
