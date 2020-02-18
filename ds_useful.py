@@ -70,6 +70,35 @@ def auto_subplots(df, **kwargs):
     # plt.subplots_adjust(wspace=WSPACE, hspace=HSPACE)
     plt.tight_layout()
     plt.show()
+
+def make_subplots(df, plotfunc=None, func_args=None, func_kwargs=None, limitx=8, each_size=3, exclude_cols=None, **kwargs):
+    '''
+    Makes a subplot, filled with a given plotting function
+    '''
+    columns = df.columns.drop(exclude_cols, axis=1)
+    len_cols = len(columns)
+
+    try_num = len_cols
+    while True:
+        sq = math.sqrt(try_num)
+        if sq == int(sq):
+            break
+        try_num += 1
+    count_dimensions = tuple([sq, sq])
+
+    if count_dimensions[0] > limitx:
+        count_dimensions = tuple([limitx, int(len_cols/limitx + 1)])
+
+    dimensions = tuple([count_dimensions[0] * each_size, count_dimensions[1] * each_size])
+    plt.figure(figsize=dimensions)
+
+    for i, col in enumerate(columns, 1):
+        plt.subplot(count_dimensions[0], count_dimensions[1], i)
+        plotfunc(df[col], *func_args, **func_kwargs)
+        plt.title(col)
+
+    plt.tight_layout()
+    plt.show()
 # ------- END OF DISTRIBUTION SELF_MADE FUNCS ----------------------|
 
 # ----- FUNCTION FOR GENERAL MISSING VALUES ---------------|
