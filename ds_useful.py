@@ -75,7 +75,7 @@ def make_subplots(df, plotfunc=None, func_args=None, func_kwargs=None, limitx=8,
     '''
     Makes a subplot, filled with a given plotting function
     '''
-    columns = df.columns.drop(exclude_cols, axis=1)
+    columns = df.columns.drop(exclude_cols)
     len_cols = len(columns)
 
     try_num = len_cols
