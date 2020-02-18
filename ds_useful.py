@@ -110,7 +110,7 @@ def get_minmax_with_threshold(s, threshold, range_type='iqr'):
         q75, q25 = np.percentile(s, [75,25])
         ranged = q75 - q25
     elif range_type == 'std':
-        ranged = S.std()
+        ranged = s.std()
 
     min_val = q25 - (ranged*threshold)
     max_val = q75 + (ranged*threshold)
@@ -153,7 +153,7 @@ def outliers_summary(df, threshold, range_type='iqr', **kwargs):
         
     return s
 
-def get_percentiles(df, column_name, threshold, ranage_type='iqr'):
+def get_percentiles(df, column_name, threshold, range_type='iqr'):
     min_val, max_val = get_minmax_with_threshold(df[column_name], threshold, range_type=range_type)
     
     max_percentile = df.loc[df[column_name] >= max_val, column_name].count() / len(df[column_name])
