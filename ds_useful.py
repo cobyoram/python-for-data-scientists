@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import math
 
+# Include the below code in jupyter notebooks to link people to this file for reference
+# [My Useful Data Science Functions](https://github.com/cobyoram/python-for-data-scientists/blob/master/ds_useful.py)
+
 # ----- FUNCTION FOR DISTRIBUTIONS ---------------|
 def auto_subplots(df, **kwargs):
     '''
@@ -134,7 +137,7 @@ def missingness_summary(df, **kwargs):
 # ------- END OF MISSING SELF_MADE FUNCS ----------------------|
 
 # ----- FUNCTIONS FOR GENERAL OUTLIER HANDLING --------------|
-def get_minmax_with_threshold(s, threshold, range_type='iqr'):
+def get_minmax_with_threshold(s, threshold=1.5, range_type='iqr'):
     if range_type == 'iqr':
         q75, q25 = np.percentile(s, [75,25])
         ranged = q75 - q25
@@ -146,11 +149,11 @@ def get_minmax_with_threshold(s, threshold, range_type='iqr'):
     
     return min_val, max_val
     
-def get_outliers(s, threshold, range_type='iqr'):
+def get_outliers(s, threshold=1.5, range_type='iqr'):
     min_val, max_val = get_minmax_with_threshold(s, threshold, range_type=range_type)
     return s.loc[(s > max_val) | (s < min_val)]
 
-def outliers_summary(df, threshold, range_type='iqr', **kwargs):  
+def outliers_summary(df, threshold=1.5, range_type='iqr', **kwargs):  
     '''
     This function creates a series representing what percentage of data are outliers for each column of a dataframe
 
@@ -182,7 +185,7 @@ def outliers_summary(df, threshold, range_type='iqr', **kwargs):
         
     return s
 
-def get_percentiles(df, column_name, threshold, range_type='iqr'):
+def get_percentiles(df, column_name, threshold=1.5, range_type='iqr'):
     min_val, max_val = get_minmax_with_threshold(df[column_name], threshold, range_type=range_type)
     
     max_percentile = df.loc[df[column_name] >= max_val, column_name].count() / len(df[column_name])
@@ -190,7 +193,7 @@ def get_percentiles(df, column_name, threshold, range_type='iqr'):
     
     return min_percentile, max_percentile
 
-def drop_outliers(df, threshold, range_type='iqr'):
+def drop_outliers(df, threshold=1.5, range_type='iqr'):
     drop_inds = set()
     for col in outliers_summary(df, threshold, range_type=range_type).index:
         outliers = get_outliers(df[col], threshold, range_type=range_type).index
