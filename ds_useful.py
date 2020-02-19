@@ -71,7 +71,7 @@ def auto_subplots(df, **kwargs):
     plt.tight_layout()
     plt.show()
 
-def make_subplots(df, plotfunc=None, func_args=None, func_kwargs=None, limitx=8, each_size=3, **kwargs):
+def make_subplots(df, plotfunc=None, func_args=[], func_kwargs={}, limitx=8, each_size=3, **kwargs):
     '''
     Makes a subplot, filled with a given plotting function
     '''
