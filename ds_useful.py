@@ -94,7 +94,7 @@ def make_subplots(df, plotfunc=None, func_args=[], func_kwargs={}, limitx=8, eac
 
     for i, col in enumerate(columns, 1):
         plt.subplot(count_dimensions[0], count_dimensions[1], i)
-        plotfunc(df[col], *func_args, **func_kwargs)
+        plotfunc(df, col, *func_args, **func_kwargs)
         plt.title(col)
 
     plt.tight_layout()
