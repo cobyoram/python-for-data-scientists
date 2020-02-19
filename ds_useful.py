@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import math
+import scipy.stats as stats
 
 # Include the below code in jupyter notebooks to link people to this file for reference
 # [My Useful Data Science Functions](https://github.com/cobyoram/python-for-data-scientists/blob/master/ds_useful.py)
@@ -365,6 +366,20 @@ def similar_variables(df, target, similarity_threshold=.9, print_log=False):
         print(S)
     
     return S
+
+def get_significant_category_columns(df, target, sig=True):
+    sig_cols = set()
+    for col in df.select_dtypes('object').columns:
+        ucats = []
+        for ucat in df[col].unique():
+            ucats.append(df.loc[df[col] == ucat, target])
+        anova = stats.f_oneway(*ucats)
+        if anova.pvalue < .05 and sig:
+            sig_cols.update([col])
+        if anova.pvalue >= .05 and not sig:
+            sig_cols.update([col])
+    
+    return sig_cols
 
 # def auto_subplots(df, **kwargs):
 #     '''
