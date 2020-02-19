@@ -71,11 +71,11 @@ def auto_subplots(df, **kwargs):
     plt.tight_layout()
     plt.show()
 
-def make_subplots(df, plotfunc=None, func_args=None, func_kwargs=None, limitx=8, each_size=3, exclude_cols=None, **kwargs):
+def make_subplots(df, plotfunc=None, func_args=None, func_kwargs=None, limitx=8, each_size=3, **kwargs):
     '''
     Makes a subplot, filled with a given plotting function
     '''
-    columns = df.columns.drop(exclude_cols)
+    columns = df.columns
     len_cols = len(columns)
 
     try_num = len_cols
