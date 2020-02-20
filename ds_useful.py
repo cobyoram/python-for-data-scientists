@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import math
 import scipy.stats as stats
+from statsmodels.tools.eval_measures import mse, rmse
+from sklearn.metrics import mean_absolute_error
 
 # Include the below code in jupyter notebooks to link people to this file for reference
 # [My Useful Data Science Functions](https://github.com/cobyoram/python-for-data-scientists/blob/master/ds_useful.py)
@@ -380,6 +382,40 @@ def get_significant_category_columns(df, target, sig=True):
             sig_cols.update([col])
     
     return sig_cols
+
+def sort_by_correlation(df, target_name, sort='desc', abs=True):
+    corr_df = df.corr()
+    if sort=='asc':
+        ascending=True
+    elif sort == 'desc':
+        ascending=False
+    corr = corr_df[target_name].copy()
+    if abs:
+        corr = np.abs(corr)
+    corr.sort_values(ascending=ascending, inplace=True)
+    return corr
+
+def sort_by_categorical_var(df, target_name, sort='desc'):
+    cat_cols = df.select_dtypes('object').columns
+    stds = []
+    for col in cat_cols:
+        cats = df[col].unique()
+        cat_means = [df.loc[df[col]==cat,target_name].mean() for cat in cats]
+        col_std = np.std(cat_means)
+        stds.append(col_std)
+    s = pd.Series(stds, index=cat_cols)
+    if sort=='asc':
+        ascending = True
+    elif sort=='desc':
+        ascending=False
+    s.sort_values(ascending = ascending, inplace=True)
+    return s
+
+def print_evaluation_metrics(true, predicted):
+    print("Mean absolute error of the prediction is: {}".format(mean_absolute_error(true, predicted)))
+    print("Mean squared error of the prediction is: {}".format(mse(true, predicted)))
+    print("Root mean squared error of the prediction is: {}".format(rmse(true, predicted)))
+    print("Mean absolute percentage error of the prediction is: {}".format(np.mean(np.abs((true - predicted) / true)) * 100))
 
 # def auto_subplots(df, **kwargs):
 #     '''
