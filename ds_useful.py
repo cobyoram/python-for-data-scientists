@@ -37,7 +37,7 @@ def auto_subplots(df, **kwargs):
 
     if kwargs.get('limitx'):
         limitx = kwargs.get('limitx')
-        count_dimensions = tuple([limitx, int(len_cols/limitx + 1)])
+        count_dimensions = tuple([int(len_cols/limitx) + 1, limitx])
 
     else:
         try_num = len_cols
@@ -91,7 +91,7 @@ def make_subplots(df, plotfunc=None, func_args=[], func_kwargs={}, limitx=8, eac
     count_dimensions = tuple([sq, sq])
 
     if count_dimensions[0] > limitx:
-        count_dimensions = tuple([int(len_cols/limitx) + 1], limitx)
+        count_dimensions = tuple([int(len_cols/limitx) + 1, limitx])
 
     dimensions = tuple([count_dimensions[0] * each_size, count_dimensions[1] * each_size])
     plt.figure(figsize=dimensions)
