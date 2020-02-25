@@ -341,8 +341,8 @@ def remove_correlated_features(dataset, target, threshold):
 def similar_variables(df, target, similarity_threshold=.9, print_log=False):
     corr = df.corr()
 
-    feature_corr = corr.drop('saleprice', axis=1).drop('saleprice', axis=0)
-    target_corr = corr.loc['saleprice']
+    feature_corr = corr.drop(target, axis=1).drop(target, axis=0)
+    target_corr = corr.loc[target]
 
     similar_pairs = []
     for col in feature_corr.columns:
